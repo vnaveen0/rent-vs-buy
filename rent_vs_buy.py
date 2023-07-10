@@ -4,21 +4,22 @@ def monthly_cost():
 
     # Buy House Constants
     total_years = 30
-    orig_house_cost = 700000
-    downpayment_rate = 10/100.0
+    orig_house_cost = 950000
+    downpayment_rate = 7.5/100.0
     closing_cost_rate = 1.5/100.0
-    interest_rate = 4/100.0
+    interest_rate = 6.5/100.0
     closing_cost = closing_cost_rate*orig_house_cost
     property_tax_rate = 0.29/100.0
     # Maint. + strata etc
     maintenance_rate = 1/100.0 
     # utilities = 200.0
     house_appreciation_rate = 6/100.0
+    inflation_rate = 3/100.0
 
     # Renting Constants
     orig_rent = 3000
     rent_increase_rate = 2/100.0
-    investment_return_rate = 10/100.0
+    investment_return_rate = 6/100.0
 
     print("=============")
     print("Buy House")
@@ -29,6 +30,8 @@ def monthly_cost():
     monthly_interest_rate = interest_rate/12
     monthly_house_appreciation = house_appreciation_rate/12
     
+
+    orig_maintenance_monthly = maintenance_rate*orig_house_cost/12
     # One time cost
     closing_cost = closing_cost_rate*orig_house_cost
     closing_cost_monthly = closing_cost/total_years/12
@@ -50,6 +53,7 @@ def monthly_cost():
     total_diff_invested = 0
     for i in range(0, total_years):
         current_house_value = -1*npf.fv(house_appreciation_rate,i,0,orig_house_cost)
+        # maintenance_monthly = orig_maintenance_monthly*pow((1+ inflation_rate),i)
         maintenance_monthly = maintenance_rate*current_house_value/12
         property_tax_monthly = property_tax_rate*current_house_value/12
         
