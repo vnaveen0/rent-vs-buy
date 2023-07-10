@@ -83,16 +83,17 @@ def monthly_cost():
 
         
         current_invest_value = round(current_value_of_orig_investment + total_diff_invested)    
-        print("Yr: {} Cumm Total: {} diff_buy_minus_rent_yearly: {} prev_interest: {} current_value_of_orig_investment: {}".format( 
-                      i, current_invest_value, diff_buy_minus_rent_yearly, round(prev_interest), round(current_value_of_orig_investment))) 
+        # print("Yr: {} Cumm Total: {} diff_buy_minus_rent_yearly: {} prev_interest: {} current_value_of_orig_investment: {}".format( 
+        #               i, current_invest_value, diff_buy_minus_rent_yearly, round(prev_interest), round(current_value_of_orig_investment))) 
         
-        # print("Year: {} Yrly Cost/Renting {} Yrly Cost/Buying {}. Yrly Diff: {}. Current Invest.Value:{} Current House Value: {}".
-        #       format(i, round(current_rent_monthly*12), round(total_cost_when_buying_yearly), diff_buy_minus_rent_yearly, 
-        #              current_invest_value, round(current_house_value))) 
+        print("Year: {} Yrly Cost/Renting {} Yrly Cost/Buying {}. Yrly Diff: {}. Current Invest.Value:{} Current House Value: {}".
+              format(i, round(current_rent_monthly*12), round(total_cost_when_buying_yearly), diff_buy_minus_rent_yearly, 
+                     current_invest_value, round(current_house_value))) 
     
     print("Total Paid: {}".format(round(total_cost_when_buying)))
     # Future house Value
-    future_house_cost = round(-1*npf.fv(monthly_house_appreciation,total_installments,0,orig_house_cost))
+    # future_house_cost = round(-1*npf.fv(monthly_house_appreciation,total_installments,0,orig_house_cost))
+    future_house_cost = round(-1*npf.fv(house_appreciation_rate,total_years-1,0,orig_house_cost))
     print("Future House Value: {}".format(future_house_cost))
     buy_profit = round(future_house_cost - total_cost_when_buying)
     print("Diff: {}".format(buy_profit))
