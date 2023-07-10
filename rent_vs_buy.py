@@ -19,7 +19,7 @@ def monthly_cost():
     # Renting Constants
     orig_rent = 3000
     rent_increase_rate = 2/100.0
-    investment_return_rate = 6/100.0
+    investment_return_rate = 7/100.0
 
     print("=============")
     print("Buy House")
@@ -45,12 +45,13 @@ def monthly_cost():
     total_installments = total_years*12
     orig_investment = orig_house_cost*downpayment_rate + closing_cost_rate*orig_house_cost
     # print("Original Investment: {}".format(orig_investment))
-    future_asset_value = round(-1*npf.fv(investment_return_rate/12.0,total_installments,0,orig_investment))
+    # future_asset_value = round(-1*npf.fv(investment_return_rate/12.0,total_installments,0,orig_investment))
     
     # Every Year Cost 
     total_cost_when_buying = 0
     total_rent = 0
     total_diff_invested = 0
+    current_invest_value =0 
     for i in range(0, total_years):
         current_house_value = -1*npf.fv(house_appreciation_rate,i,0,orig_house_cost)
         # maintenance_monthly = orig_maintenance_monthly*pow((1+ inflation_rate),i)
@@ -69,21 +70,22 @@ def monthly_cost():
             current_rent_monthly = orig_rent*pow((1 + rent_increase_rate),i)
 
 
-        print("Year: {} Monthly Stats  RentCost: {}  BuyCost: {} emi: {}, maint: {}, property_tax: {} closing: {}".format(i, 
-                        round(current_rent_monthly), round(total_cost_when_buying_monthly), round(emi_monthly), round(maintenance_monthly), 
-                        round(property_tax_monthly), round(closing_cost_monthly)))
+        # print("Year: {} Monthly Stats  RentCost: {}  BuyCost: {} emi: {}, maint: {}, property_tax: {} closing: {}".format(i, 
+        #                 round(current_rent_monthly), round(total_cost_when_buying_monthly), round(emi_monthly), round(maintenance_monthly), 
+        #                 round(property_tax_monthly), round(closing_cost_monthly)))
         
-        total_rent +=current_rent_monthly 
+        total_rent +=current_rent_monthly*12 
 
         diff_buy_minus_rent_yearly = round(total_cost_when_buying_yearly - current_rent_monthly*12)
         if diff_buy_minus_rent_yearly >0:
                 prev_interest = total_diff_invested*(1 + investment_return_rate)
                 total_diff_invested = diff_buy_minus_rent_yearly + prev_interest
-                # print("Yr: {} diff_buy_minus_rent_yearly: {} prev_interest: {} current_value_of_orig_investment: {}".format( 
-                #       i, diff_buy_minus_rent_yearly, round(prev_interest), round(current_value_of_orig_investment)))
 
         
-        current_invest_value = round(current_value_of_orig_investment + total_diff_invested)     
+        current_invest_value = round(current_value_of_orig_investment + total_diff_invested)    
+        print("Yr: {} Cumm Total: {} diff_buy_minus_rent_yearly: {} prev_interest: {} current_value_of_orig_investment: {}".format( 
+                      i, current_invest_value, diff_buy_minus_rent_yearly, round(prev_interest), round(current_value_of_orig_investment))) 
+        
         # print("Year: {} Yrly Cost/Renting {} Yrly Cost/Buying {}. Yrly Diff: {}. Current Invest.Value:{} Current House Value: {}".
         #       format(i, round(current_rent_monthly*12), round(total_cost_when_buying_yearly), diff_buy_minus_rent_yearly, 
         #              current_invest_value, round(current_house_value))) 
@@ -100,7 +102,7 @@ def monthly_cost():
     print("Rent House")
     print("=============")
 
-    print("Total Rent: {}".format(total_rent))
+    print("Total Rent: {}".format(round(total_rent)))
 
 
 
@@ -109,8 +111,8 @@ def monthly_cost():
 
     
     
-    print("Future Asset Value: {}".format(future_asset_value))
-    rent_profit = round(future_asset_value - total_rent)
+    print("Future Asset Value: {}".format(current_invest_value))
+    rent_profit = round(current_invest_value - total_rent)
     print("Diff: {}".format(rent_profit))
 
 
