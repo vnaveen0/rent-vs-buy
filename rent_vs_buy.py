@@ -1,8 +1,14 @@
 import numpy_financial as npf
 
-def monthly_cost(total_years, downpayment_rate, closing_cost_rate, orig_house_cost, interest_rate):
+def monthly_cost():
 
     # Buy House Constants
+    total_years = 30
+    orig_house_cost = 700000
+    downpayment_rate = 10/100.0
+    closing_cost_rate = 1.5/100.0
+    interest_rate = 4/100.0
+    closing_cost = closing_cost_rate*orig_house_cost
     property_tax_rate = 0.29/100.0
     # Maint. + strata etc
     maintenance_rate = 1/100.0 
@@ -48,44 +54,35 @@ def monthly_cost(total_years, downpayment_rate, closing_cost_rate, orig_house_co
         property_tax_monthly = property_tax_rate*current_house_value/12
         
         total_cost_when_buying_monthly = emi_monthly + maintenance_monthly + property_tax_monthly + closing_cost_monthly
-        total_cost_when_buying_yearly = total_cost_when_buying_monthly*12
-        # print("Year: {} Total Yr Cost: {} emi: {}, maint: {}, property_tax: {} closing: {}".format(i, total_cost_when_buying_yearly, 
-        #                                                                             emi_monthly, 
-        #                                                                             maintenance_monthly, 
-        #                                                                             property_tax_monthly, closing_cost_monthly)) 
+        total_cost_when_buying_yearly = total_cost_when_buying_monthly*12 
         total_cost_when_buying += total_cost_when_buying_yearly
 
 
-        
-
         current_value_of_orig_investment = round(-1*npf.fv(investment_return_rate/12.0,i*12,0,orig_investment))
-        diff_amount_investment = 0
         if i ==0:
-            current_rent = orig_rent
-            diff_amount = emi_monthly - current_rent
-            if diff_amount>0:
-                diff_amount_investment = diff_amount
-            else:
-                diff_amount_investment = 0
-            
+            current_rent_monthly = orig_rent            
         else:
-            current_rent = orig_rent*pow((1 + rent_increase_rate),i)
-            diff_amount = current_rent - emi_monthly
-            if diff_amount>0:
-                diff_amount_investment = total_diff_invested*pow((1 + investment_return_rate),i) + diff_amount
-            else:
-                diff_amount_investment = total_diff_invested*pow((1 + investment_return_rate),i)
+            current_rent_monthly = orig_rent*pow((1 + rent_increase_rate),i)
+
+
+        print("Year: {} Monthly Stats  RentCost: {}  BuyCost: {} emi: {}, maint: {}, property_tax: {} closing: {}".format(i, 
+                        round(current_rent_monthly), round(total_cost_when_buying_monthly), round(emi_monthly), round(maintenance_monthly), 
+                        round(property_tax_monthly), round(closing_cost_monthly)))
         
-        # print("YR: {}, Diff: {} ")
-        total_diff_invested += diff_amount_investment
-        current_invest_value = round(current_value_of_orig_investment + total_diff_invested)
+        total_rent +=current_rent_monthly 
 
-        total_rent +=current_rent 
+        diff_buy_minus_rent_yearly = round(total_cost_when_buying_yearly - current_rent_monthly*12)
+        if diff_buy_minus_rent_yearly >0:
+                prev_interest = total_diff_invested*(1 + investment_return_rate)
+                total_diff_invested = diff_buy_minus_rent_yearly + prev_interest
+                # print("Yr: {} diff_buy_minus_rent_yearly: {} prev_interest: {} current_value_of_orig_investment: {}".format( 
+                #       i, diff_buy_minus_rent_yearly, round(prev_interest), round(current_value_of_orig_investment)))
 
-        diff_rent_minus_buy = round(current_rent*12 - total_cost_when_buying_yearly)
-        print("Year: {} Yrly Cost/Renting {} Yrly Cost/Buying {}. Yrly Diff: {}. Current Invest.Value:{} Current House Value: {}".
-              format(i, round(total_rent), round(total_cost_when_buying_yearly), diff_rent_minus_buy, 
-                     current_invest_value, round(current_house_value))) 
+        
+        current_invest_value = round(current_value_of_orig_investment + total_diff_invested)     
+        # print("Year: {} Yrly Cost/Renting {} Yrly Cost/Buying {}. Yrly Diff: {}. Current Invest.Value:{} Current House Value: {}".
+        #       format(i, round(current_rent_monthly*12), round(total_cost_when_buying_yearly), diff_buy_minus_rent_yearly, 
+        #              current_invest_value, round(current_house_value))) 
     
     print("Total Paid: {}".format(round(total_cost_when_buying)))
     # Future house Value
@@ -118,13 +115,4 @@ def monthly_cost(total_years, downpayment_rate, closing_cost_rate, orig_house_co
     print("Buy - Rent = {}".format(diff))
 
 if __name__ == "__main__":
-    
-    total_years = 30
-    orig_house_cost = 700000
-    downpayment_rate = 10/100.0
-    closing_cost_rate = 1.5/100.0
-    interest_rate = 4/100.0
-    closing_cost = closing_cost_rate*orig_house_cost
-
-
-    monthly_cost(total_years, downpayment_rate, closing_cost_rate, orig_house_cost, interest_rate)
+    monthly_cost()
